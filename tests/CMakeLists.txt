@@ -4,7 +4,7 @@ add_executable(mylibrary_unittests
 
 target_link_libraries(mylibrary_unittests
     PRIVATE
-        DataLibrary
+        ScientificDataLibrary
         gtest_main
 )
 

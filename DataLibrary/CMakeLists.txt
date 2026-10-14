@@ -1,21 +1,19 @@
-add_library(DataLibrary
-    include/DataGenerator.hpp
-    src/DataGenerator.cpp
-)
+add_library(ScientificDataLibrary)
 
-target_include_directories(DataLibrary PUBLIC include)
-
-
-add_library(ScientificDataLibrary
-src/DataGenerator.cpp
+target_sources(ScientificDataLibrary
+    PRIVATE
+        src/DataGenerator.cpp
+    PUBLIC
+        include/DataGenerator.hpp
 )
 
 target_include_directories(ScientificDataLibrary
-PUBLIC
-${CMAKE_CURRENT_SOURCE_DIR}/include
+    PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
 
 target_compile_features(ScientificDataLibrary
-PUBLIC
-cxx_std_17
+    PUBLIC
+        cxx_std_17
 )
+
