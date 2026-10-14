@@ -31,6 +31,11 @@
 *.out
 *.app
 
-#QtCreator
-CMakeLists.txt.user
-/build
+# QtCreator local settings
+.qtcreator/
+*.user
+*.user*
+
+# Cmake build output
+build/
+cmake-build-*/
