@@ -1,17 +1,21 @@
-cmake_minimum_required(VERSION 3.23)
-project(QtVTK LANGUAGES CXX VERSION 1.0.0)
+find_package(
+    Qt6
+    COMPONENTS
+        Widgets
+        Concurrent
+        Gui
+        OpenGLWidgets
+    REQUIRED
+)
 
-find_package(Qt6 COMPONENTS Widgets Concurrent Gui OpenGLWidgets REQUIRED)
-find_package(VTK REQUIRED)
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTOUIC ON)
+set(CMAKE_AUTORCC ON)
 
-SET(CMAKE_INCLUDE_CURRENT_DIR ON)
-SET(CMAKE_AUTOMOC ON)
-SET(CMAKE_AUTOUIC ON)
-SET(CMAKE_AUTORCC ON)
+add_executable(CaterpillarSimulation)
 
-
-add_executable(${PROJECT_NAME})
-target_sources(${PROJECT_NAME}
+target_sources(CaterpillarSimulation
     PRIVATE
         main.cpp
         MainWindow.cpp
@@ -19,12 +23,12 @@ target_sources(${PROJECT_NAME}
         MainWindow.ui
 )
 
-target_include_directories(${PROJECT_NAME}
+target_include_directories(CaterpillarSimulation
     PRIVATE
-    ${VTK_INCLUDE_DIRS}
+        ${VTK_INCLUDE_DIRS}
 )
 
-target_link_libraries(${PROJECT_NAME}
+target_link_libraries(CaterpillarSimulation
     PRIVATE
         ScientificDataLibrary
         Qt6::Widgets
@@ -32,6 +36,11 @@ target_link_libraries(${PROJECT_NAME}
         Qt6::OpenGL
         Qt6::OpenGLWidgets
         ${VTK_LIBRARIES}
+)
+
+target_compile_features(CaterpillarSimulation
+    PRIVATE
+        cxx_std_17
 )
 
 
