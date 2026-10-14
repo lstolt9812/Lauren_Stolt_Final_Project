@@ -1,12 +1,14 @@
 cmake_minimum_required(VERSION 3.23)
 
-project(QtVTK LANGUAGES CXX VERSION 1.0.0)
+project(
+    LaurenStoltFinalProject
+    VERSION 1.0.0
+    LANGUAGES CXX
+)
 
 find_package(VTK REQUIRED)
-# ----------------------------
-# GoogleTest
-# ----------------------------
 
+# GoogleTest
 include(FetchContent)
 
 FetchContent_Declare(
@@ -14,15 +16,13 @@ FetchContent_Declare(
     URL https://github.com/google/googletest/archive/refs/heads/main.zip
 )
 
-# Required for Windows
+# Keep GoogleTest compatible with the Windows runtime used by this project.
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 
 FetchContent_MakeAvailable(googletest)
 
-# ----------------------------
-
-add_subdirectory(application)
 add_subdirectory(DataLibrary)
-add_subdirectory(tests)
+add_subdirectory(application)
 
 enable_testing()
+add_subdirectory(tests)
