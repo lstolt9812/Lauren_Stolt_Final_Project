@@ -6,8 +6,6 @@ project(
     LANGUAGES CXX
 )
 
-find_package(VTK REQUIRED)
-
 # GoogleTest
 include(FetchContent)
 
@@ -21,7 +19,6 @@ set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 
 FetchContent_MakeAvailable(googletest)
 
-add_subdirectory(DataLibrary)
 add_subdirectory(SimulationLibrary)
 add_subdirectory(application)
 

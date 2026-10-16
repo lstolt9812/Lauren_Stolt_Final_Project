@@ -6,45 +6,41 @@
 
 #include <vtkSmartPointer.h>
 
+#include "Position.hpp"
+
 namespace Ui
 {
 class MainWindow;
 }
 
 class vtkActor;
-class vtkDataSetSurfaceFilter;
 class vtkGenericOpenGLRenderWindow;
 class vtkPolyDataMapper;
+class vtkRegularPolygonSource;
 class vtkRenderer;
-class vtkStructuredGrid;
 
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
-    public:
-        explicit MainWindow(QWidget* parent = nullptr);
-        ~MainWindow();
+public:
+    explicit MainWindow(QWidget* parent = nullptr);
+    ~MainWindow();
 
-    private slots:
+private:
+    void setupVtkPipeline();
 
-        void updateVisualization();
-        void updateOpacity(int value);
-        void updateWireframe(bool enabled);
+    Ui::MainWindow* ui;
 
-    private:
-        void setup_vtk_pipeline();
+    QVTKOpenGLNativeWidget* mQVtkWidget;
 
-        Ui::MainWindow* ui;
+    Simulation::Position mCreaturePosition;
 
-        QVTKOpenGLNativeWidget* mQVtkWidget;
-
-        vtkSmartPointer<vtkStructuredGrid> mStructuredGrid;
-        vtkSmartPointer<vtkDataSetSurfaceFilter> mSurfaceFilter;
-        vtkSmartPointer<vtkPolyDataMapper> mMapper;
-        vtkSmartPointer<vtkActor> mActor;
-        vtkSmartPointer<vtkRenderer> mRenderer;
-        vtkSmartPointer<vtkGenericOpenGLRenderWindow> mRenderWindow;
+    vtkSmartPointer<vtkRegularPolygonSource> mCircleSource;
+    vtkSmartPointer<vtkPolyDataMapper> mCircleMapper;
+    vtkSmartPointer<vtkActor> mCircleActor;
+    vtkSmartPointer<vtkRenderer> mRenderer;
+    vtkSmartPointer<vtkGenericOpenGLRenderWindow> mRenderWindow;
 };
 
 #endif

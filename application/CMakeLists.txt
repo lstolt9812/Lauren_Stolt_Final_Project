@@ -2,10 +2,22 @@ find_package(
     Qt6
     COMPONENTS
         Widgets
-        Concurrent
         Gui
+        OpenGL
         OpenGLWidgets
     REQUIRED
+)
+
+find_package(
+    VTK
+    REQUIRED
+    COMPONENTS
+        CommonCore
+        CommonDataModel
+        FiltersSources
+        InteractionStyle
+        RenderingCore
+        RenderingOpenGL2
 )
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -23,14 +35,9 @@ target_sources(CaterpillarSimulation
         MainWindow.ui
 )
 
-target_include_directories(CaterpillarSimulation
-    PRIVATE
-        ${VTK_INCLUDE_DIRS}
-)
-
 target_link_libraries(CaterpillarSimulation
     PRIVATE
-        ScientificDataLibrary
+        SimulationLibrary
         Qt6::Widgets
         Qt6::Gui
         Qt6::OpenGL
@@ -43,4 +50,7 @@ target_compile_features(CaterpillarSimulation
         cxx_std_17
 )
 
-
+vtk_module_autoinit(
+    TARGETS CaterpillarSimulation
+    MODULES ${VTK_LIBRARIES}
+)
