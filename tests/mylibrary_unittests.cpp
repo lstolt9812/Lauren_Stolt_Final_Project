@@ -1,5 +1,7 @@
 #include "gtest/gtest.h"
 
+#include "Food.hpp"
+#include "MapBounds.hpp"
 #include "Position.hpp"
 
 TEST(PositionTest, DefaultsToOrigin)
@@ -27,4 +29,157 @@ TEST(PositionTest, CoordinatesCanBeChanged)
 
     EXPECT_DOUBLE_EQ(position.x, 12.5);
     EXPECT_DOUBLE_EQ(position.y, 7.25);
+}
+
+TEST(FoodTest, StoresGivenPosition)
+{
+    const Simulation::Position position { 4.5, -2.0 };
+
+    const Simulation::Food food { position };
+
+    EXPECT_DOUBLE_EQ(food.position().x, 4.5);
+    EXPECT_DOUBLE_EQ(food.position().y, -2.0);
+}
+
+TEST(MapBoundsTest, ContainsPositionInMiddle)
+{
+    const Simulation::MapBounds bounds
+    {
+        -10.0,
+        10.0,
+        -10.0,
+        10.0
+    };
+
+    const Simulation::Position position { 0.0, 0.0 };
+
+    EXPECT_TRUE(bounds.contains(position));
+}
+
+TEST(MapBoundsTest, DoesNotContainPositionBeyondMaximumX)
+{
+    const Simulation::MapBounds bounds
+    {
+        -10.0,
+        10.0,
+        -10.0,
+        10.0
+    };
+
+    const Simulation::Position position { 11.0, 0.0 };
+
+    EXPECT_FALSE(bounds.contains(position));
+}
+
+TEST(MapBoundsTest, DoesNotContainPositionBeyondMaximumY)
+{
+    const Simulation::MapBounds bounds
+    {
+        -10.0,
+        10.0,
+        -10.0,
+        10.0
+    };
+
+    const Simulation::Position position { -11.0, 0.0 };
+
+    EXPECT_FALSE(bounds.contains(position));
+}
+
+TEST(MapBoundsTest, DoesNotContainPositionBeyondMinimumY)
+{
+    const Simulation::MapBounds bounds
+    {
+        -10.0,
+        10.0,
+        -10.0,
+        10.0
+    };
+
+    const Simulation::Position position { 0.0, -11.0 };
+
+    EXPECT_FALSE(bounds.contains(position));
+}
+
+TEST(MapBoundsTest, ContainsPositionOnBoundary)
+{
+    const Simulation::MapBounds bounds
+    {
+        -10.0,
+        10.0,
+        -10.0,
+        10.0
+    };
+
+    const Simulation::Position position { 10.0, 0.0 };
+
+    EXPECT_TRUE(bounds.contains(position));
+}
+
+TEST(FoodGenerationTest, FoodPositionIsInsideMapBounds)
+{
+    const Simulation::MapBounds bounds
+    {
+        -10.0,
+        10.0,
+        -10.0,
+        10.0
+    };
+
+    const Simulation::Position position { 5.0, 0 };
+    const Simulation::Food food { position };
+
+    EXPECT_TRUE(bounds.contains(food.position()));
+}
+
+TEST(MapBoundsTest, ReportsMinimumX)
+{
+    const Simulation::MapBounds bounds
+    {
+        -10.0,
+        10.0,
+        -10.0,
+        10.0
+    };
+
+    EXPECT_DOUBLE_EQ(bounds.minimumX(), -10.0);
+}
+
+TEST(MapBoundsTest, ReportsMaximumX)
+{
+    const Simulation::MapBounds bounds
+    {
+        -10.0,
+        10.0,
+        -10.0,
+        10.0
+    };
+
+    EXPECT_DOUBLE_EQ(bounds.maximumX(), 10.0);
+}
+
+TEST(MapBoundsTest, ReportsMinimumY)
+{
+    const Simulation::MapBounds bounds
+    {
+        -10.0,
+        10.0,
+        -10.0,
+        10.0
+    };
+
+    EXPECT_DOUBLE_EQ(bounds.minimumY(), -10.0);
+}
+
+TEST(MapBoundsTest, ReportsMaximumY)
+{
+    const Simulation::MapBounds bounds
+    {
+        -10.0,
+        10.0,
+        -10.0,
+        10.0
+    };
+
+    EXPECT_DOUBLE_EQ(bounds.maximumY(), 10.0);
 }

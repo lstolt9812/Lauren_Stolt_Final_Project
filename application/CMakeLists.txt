@@ -18,6 +18,7 @@ find_package(
         InteractionStyle
         RenderingCore
         RenderingOpenGL2
+        GUISupportQt
 )
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
