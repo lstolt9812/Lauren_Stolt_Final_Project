@@ -5,6 +5,7 @@
 #include <QVTKOpenGLNativeWidget.h>
 
 #include <vtkActor.h>
+#include <vtkCamera.h>
 #include <vtkGenericOpenGLRenderWindow.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkProperty.h>
@@ -36,45 +37,78 @@ MainWindow::~MainWindow()
 
 void MainWindow::setupVtkPipeline()
 {
-    // Create a flat circle centered on its own local origin.
     mCircleSource = vtkSmartPointer<vtkRegularPolygonSource>::New();
     mCircleSource->SetNumberOfSides(50);
     mCircleSource->SetRadius(10.0);
     mCircleSource->SetCenter(0.0, 0.0, 0.0);
     mCircleSource->GeneratePolygonOn();
 
-    // Connect the circle geometry to a VTK mapper.
     mCircleMapper = vtkSmartPointer<vtkPolyDataMapper>::New();
     mCircleMapper->SetInputConnection(mCircleSource->GetOutputPort());
 
-    // Create the visible circle actor.
     mCircleActor = vtkSmartPointer<vtkActor>::New();
     mCircleActor->SetMapper(mCircleMapper);
 
-    // Give the creature a blue color.
     mCircleActor->GetProperty()->SetColor(0.2, 0.7, 1.0);
 
-    // Put the graphical circle at the simulation position.
     mCircleActor->SetPosition(
         mCreaturePosition.x,
         mCreaturePosition.y,
         0.0
         );
 
-    // Create the scene and add the circle.
     mRenderer = vtkSmartPointer<vtkRenderer>::New();
     mRenderer->AddActor(mCircleActor);
     mRenderer->SetBackground(0.12, 0.14, 0.18);
 
-    // Create the VTK render window.
     mRenderWindow =
         vtkSmartPointer<vtkGenericOpenGLRenderWindow>::New();
 
     mRenderWindow->AddRenderer(mRenderer);
 
-    // Connect VTK's render window to the Qt widget.
     mQVtkWidget->setRenderWindow(mRenderWindow);
 
-    mRenderer->ResetCamera();
+    const double minimumX = -10.0;
+    const double maximumX = 10.0;
+    const double minimumY = -10.0;
+    const double maximumY = 10.0;
+
+    const double centerX = (minimumX + maximumX) / 2.0;
+    const double centerY = (minimumY + maximumY) / 2.0;
+
+    const double mapWidth = maximumX - minimumX;
+    const double mapHeight = maximumY - minimumY;
+
+    vtkSmartPointer<vtkCamera> camera =
+        vtkSmartPointer<vtkCamera>::New();
+
+    camera->SetPosition(
+        centerX,
+        centerY,
+        100.0
+        );
+
+    camera->SetFocalPoint(
+        centerX,
+        centerY,
+        0.0
+        );
+
+    camera->SetViewUp(
+        0.0,
+        1.0,
+        0.0
+        );
+
+    camera->ParallelProjectionOn();
+
+    camera->SetParallelScale(
+        mapHeight / 2.0
+        );
+
+    mRenderer->SetActiveCamera(camera);
+
+    mRenderer->ResetCameraClippingRange();
+
     mRenderWindow->Render();
 }

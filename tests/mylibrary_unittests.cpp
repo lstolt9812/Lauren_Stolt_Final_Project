@@ -201,3 +201,32 @@ TEST(FoodGeneratorTest, GeneratesFoodInsideMapBounds)
 
     EXPECT_TRUE(bounds.contains(food.position()));
 }
+
+TEST(FoodGeneratorTest, SameSeedGeneratesSameFirstPosition)
+{
+    const Simulation::MapBounds bounds {
+        -10.0,
+        10.0,
+        -10.0,
+        10.0
+    };
+
+    Simulation::FoodGenerator firstGenerator { 42 };
+    Simulation::FoodGenerator secondGenerator { 42 };
+
+    const Simulation::Food firstFood =
+        firstGenerator.generate(bounds);
+
+    const Simulation::Food secondFood =
+        secondGenerator.generate(bounds);
+
+    EXPECT_DOUBLE_EQ(
+        firstFood.position().x,
+        secondFood.position().x
+        );
+
+    EXPECT_DOUBLE_EQ(
+        firstFood.position().y,
+        secondFood.position().y
+        );
+}

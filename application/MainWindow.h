@@ -18,6 +18,7 @@ class vtkGenericOpenGLRenderWindow;
 class vtkPolyDataMapper;
 class vtkRegularPolygonSource;
 class vtkRenderer;
+class vtkCamera;
 
 class MainWindow : public QMainWindow
 {
