@@ -1,6 +1,7 @@
 #include "gtest/gtest.h"
 
 #include "Food.hpp"
+#include "FoodGenerator.hpp"
 #include "MapBounds.hpp"
 #include "Position.hpp"
 
@@ -182,4 +183,21 @@ TEST(MapBoundsTest, ReportsMaximumY)
     };
 
     EXPECT_DOUBLE_EQ(bounds.maximumY(), 10.0);
+}
+
+TEST(FoodGeneratorTest, GeneratesFoodInsideMapBounds)
+{
+    const Simulation::MapBounds bounds
+    {
+        -10.0,
+        10.0,
+        -10.0,
+        10.0
+    };
+
+    Simulation::FoodGenerator generator { 42 };
+
+    const Simulation::Food food = generator.generate(bounds);
+
+    EXPECT_TRUE(bounds.contains(food.position()));
 }
