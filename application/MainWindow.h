@@ -6,6 +6,9 @@
 
 #include <vtkSmartPointer.h>
 
+#include "Food.hpp"
+#include "FoodGenerator.hpp"
+#include "MapBounds.hpp"
 #include "Position.hpp"
 
 namespace Ui
@@ -14,6 +17,7 @@ class MainWindow;
 }
 
 class vtkActor;
+class vtkCubeSource;
 class vtkGenericOpenGLRenderWindow;
 class vtkPolyDataMapper;
 class vtkRegularPolygonSource;
@@ -36,10 +40,18 @@ private:
     QVTKOpenGLNativeWidget* mQVtkWidget;
 
     Simulation::Position mCreaturePosition;
+    Simulation::MapBounds mMapBounds;
+    Simulation::FoodGenerator mFoodGenerator;
+    Simulation::Food mFood;
 
     vtkSmartPointer<vtkRegularPolygonSource> mCircleSource;
     vtkSmartPointer<vtkPolyDataMapper> mCircleMapper;
     vtkSmartPointer<vtkActor> mCircleActor;
+
+    vtkSmartPointer<vtkCubeSource> mFoodSource;
+    vtkSmartPointer<vtkPolyDataMapper> mFoodMapper;
+    vtkSmartPointer<vtkActor> mFoodActor;
+
     vtkSmartPointer<vtkRenderer> mRenderer;
     vtkSmartPointer<vtkGenericOpenGLRenderWindow> mRenderWindow;
 };

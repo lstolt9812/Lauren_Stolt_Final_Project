@@ -6,6 +6,7 @@
 
 #include <vtkActor.h>
 #include <vtkCamera.h>
+#include <vtkCubeSource.h>
 #include <vtkGenericOpenGLRenderWindow.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkProperty.h>
@@ -15,7 +16,10 @@
 MainWindow::MainWindow(QWidget* parent)
     : QMainWindow(parent),
     ui(new Ui::MainWindow),
-    mCreaturePosition { 0.0, 0.0 }
+    mCreaturePosition { 0.0, 0.0 },
+    mMapBounds { -100.0, 100.0, -100.0, 100.0 },
+    mFoodGenerator { 1234 },
+    mFood { mFoodGenerator.generate(mMapBounds) }
 {
     ui->setupUi(this);
 
@@ -39,7 +43,7 @@ void MainWindow::setupVtkPipeline()
 {
     mCircleSource = vtkSmartPointer<vtkRegularPolygonSource>::New();
     mCircleSource->SetNumberOfSides(50);
-    mCircleSource->SetRadius(10.0);
+    mCircleSource->SetRadius(2.0);
     mCircleSource->SetCenter(0.0, 0.0, 0.0);
     mCircleSource->GeneratePolygonOn();
 
@@ -57,8 +61,42 @@ void MainWindow::setupVtkPipeline()
         0.0
         );
 
+    mFoodSource = vtkSmartPointer<vtkCubeSource>::New();
+
+    mFoodSource->SetXLength(1.0);
+    mFoodSource->SetYLength(1.0);
+    mFoodSource->SetZLength(0.01);
+
+    mFoodMapper = vtkSmartPointer<vtkPolyDataMapper>::New();
+
+    mFoodMapper->SetInputConnection(
+        mFoodSource->GetOutputPort()
+        );
+
+    mFoodActor = vtkSmartPointer<vtkActor>::New();
+
+    mFoodActor->SetMapper(mFoodMapper);
+
+    mFoodActor->GetProperty()->SetColor(
+        1.0,
+        0.2,
+        0.2
+        );
+
+    const Simulation::Position foodPosition =
+        mFood.position();
+
+    mFoodActor->SetPosition(
+        foodPosition.x,
+        foodPosition.y,
+        0.0
+        );
+
     mRenderer = vtkSmartPointer<vtkRenderer>::New();
+
     mRenderer->AddActor(mCircleActor);
+    mRenderer->AddActor(mFoodActor);
+
     mRenderer->SetBackground(0.12, 0.14, 0.18);
 
     mRenderWindow =
@@ -68,10 +106,10 @@ void MainWindow::setupVtkPipeline()
 
     mQVtkWidget->setRenderWindow(mRenderWindow);
 
-    const double minimumX = -10.0;
-    const double maximumX = 10.0;
-    const double minimumY = -10.0;
-    const double maximumY = 10.0;
+    const double minimumX = -100.0;
+    const double maximumX = 100.0;
+    const double minimumY = -100.0;
+    const double maximumY = 100.0;
 
     const double centerX = (minimumX + maximumX) / 2.0;
     const double centerY = (minimumY + maximumY) / 2.0;
