@@ -7,6 +7,7 @@
 #include "MapBounds.hpp"
 
 #include <random>
+#include <vector>
 
 namespace Simulation
 {
@@ -37,6 +38,19 @@ public:
         };
 
         return Food { position };
+    }
+    std::vector<Food> generateMultiple(
+        const MapBounds& bounds,
+        std::size_t count)
+    {
+        std::vector<Food> foods;
+
+        for (std::size_t index = 0; index < count; ++index)
+        {
+            foods.push_back(generate(bounds));
+        }
+
+        return foods;
     }
 
 private:

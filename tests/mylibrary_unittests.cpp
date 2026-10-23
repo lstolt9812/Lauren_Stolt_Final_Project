@@ -4,6 +4,7 @@
 #include "FoodGenerator.hpp"
 #include "MapBounds.hpp"
 #include "Position.hpp"
+#include <vector>
 
 TEST(PositionTest, DefaultsToOrigin)
 {
@@ -229,4 +230,58 @@ TEST(FoodGeneratorTest, SameSeedGeneratesSameFirstPosition)
         firstFood.position().y,
         secondFood.position().y
         );
+}
+
+TEST(FoodGeneratorTest, GeneratesRequestedNumberOfFoodObjects)
+{
+    const Simulation::MapBounds bounds{
+        -10.0,
+        10.0,
+        -10.0,
+        10.0
+    };
+
+    Simulation::FoodGenerator generator{1234};
+
+    const std::vector<Simulation::Food> foods =
+        generator.generateMultiple(bounds, 5);
+
+    EXPECT_EQ(foods.size(), 5);
+}
+
+TEST(FoodGeneratorTest, AllGeneratedFoodObjectsAreInsideMapBounds)
+{
+    const Simulation::MapBounds bounds {
+        -10.0,
+        10.0,
+        -10.0,
+        10.0
+    };
+
+    Simulation::FoodGenerator generator { 1234 };
+
+    const std::vector<Simulation::Food> foods =
+        generator.generateMultiple(bounds, 5);
+
+    for (const Simulation::Food& food : foods)
+    {
+        EXPECT_TRUE(bounds.contains(food.position()));
+    }
+}
+
+TEST(FoodGeneratorTest, RequestingZeroFoodObjectsReturnsEmptyCollection)
+{
+    const Simulation::MapBounds bounds {
+        -10.0,
+        10.0,
+        -10.0,
+        10.0
+    };
+
+    Simulation::FoodGenerator generator { 1234 };
+
+    const std::vector<Simulation::Food> foods =
+        generator.generateMultiple(bounds, 0);
+
+    EXPECT_TRUE(foods.empty());
 }

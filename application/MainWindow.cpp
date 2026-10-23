@@ -19,7 +19,8 @@ MainWindow::MainWindow(QWidget* parent)
     mCreaturePosition { 0.0, 0.0 },
     mMapBounds { -100.0, 100.0, -100.0, 100.0 },
     mFoodGenerator { 1234 },
-    mFood { mFoodGenerator.generate(mMapBounds) }
+    mFoods { mFoodGenerator.generateMultiple(mMapBounds, 20)
+      }
 {
     ui->setupUi(this);
 
@@ -73,29 +74,35 @@ void MainWindow::setupVtkPipeline()
         mFoodSource->GetOutputPort()
         );
 
-    mFoodActor = vtkSmartPointer<vtkActor>::New();
-
-    mFoodActor->SetMapper(mFoodMapper);
-
-    mFoodActor->GetProperty()->SetColor(
-        1.0,
-        0.2,
-        0.2
-        );
-
-    const Simulation::Position foodPosition =
-        mFood.position();
-
-    mFoodActor->SetPosition(
-        foodPosition.x,
-        foodPosition.y,
-        0.0
-        );
-
     mRenderer = vtkSmartPointer<vtkRenderer>::New();
 
     mRenderer->AddActor(mCircleActor);
-    mRenderer->AddActor(mFoodActor);
+
+    for (const Simulation::Food& food : mFoods)
+    {
+        vtkSmartPointer<vtkActor> foodActor =
+            vtkSmartPointer<vtkActor>::New();
+
+        foodActor->SetMapper(mFoodMapper);
+
+        foodActor->GetProperty()->SetColor(
+            1.0,
+            0.2,
+            0.2
+            );
+
+        const Simulation::Position foodPosition =
+            food.position();
+
+        foodActor->SetPosition(
+            foodPosition.x,
+            foodPosition.y,
+            0.0
+            );
+
+        mRenderer->AddActor(foodActor);
+        mFoodActors.push_back(foodActor);
+    }
 
     mRenderer->SetBackground(0.12, 0.14, 0.18);
 

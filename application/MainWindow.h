@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QVTKOpenGLNativeWidget.h>
 
+#include <vector>
 #include <vtkSmartPointer.h>
 
 #include "Food.hpp"
@@ -42,7 +43,7 @@ private:
     Simulation::Position mCreaturePosition;
     Simulation::MapBounds mMapBounds;
     Simulation::FoodGenerator mFoodGenerator;
-    Simulation::Food mFood;
+    std::vector<Simulation::Food> mFoods;
 
     vtkSmartPointer<vtkRegularPolygonSource> mCircleSource;
     vtkSmartPointer<vtkPolyDataMapper> mCircleMapper;
@@ -50,7 +51,7 @@ private:
 
     vtkSmartPointer<vtkCubeSource> mFoodSource;
     vtkSmartPointer<vtkPolyDataMapper> mFoodMapper;
-    vtkSmartPointer<vtkActor> mFoodActor;
+    std::vector<vtkSmartPointer<vtkActor>> mFoodActors;
 
     vtkSmartPointer<vtkRenderer> mRenderer;
     vtkSmartPointer<vtkGenericOpenGLRenderWindow> mRenderWindow;
