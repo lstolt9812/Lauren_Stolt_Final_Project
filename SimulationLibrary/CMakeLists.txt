@@ -1,12 +1,14 @@
 add_library(SimulationLibrary
+    include/Creature.hpp
     include/Food.hpp
-    include/MapBounds.hpp
-    include/FoodGenerator.hpp)
+    include/FoodGenerator.hpp
+    include/MapBounds.hpp)
 
 target_sources(SimulationLibrary
     PRIVATE
         src/SimulationLibrary.cpp
     PUBLIC
+        include/Creature.hpp
         include/Food.hpp
         include/FoodGenerator.hpp
         include/MapBounds.hpp

@@ -1,5 +1,6 @@
 #include "gtest/gtest.h"
 
+#include "Creature.hpp"
 #include "Food.hpp"
 #include "FoodGenerator.hpp"
 #include "MapBounds.hpp"
@@ -284,4 +285,69 @@ TEST(FoodGeneratorTest, RequestingZeroFoodObjectsReturnsEmptyCollection)
         generator.generateMultiple(bounds, 0);
 
     EXPECT_TRUE(foods.empty());
+}
+
+TEST(CreatureTest, StoresGivenPosition)
+{
+    const Simulation::Position startingPosition { 4.5, -2.0 };
+
+    const Simulation::Creature creature { startingPosition };
+
+    EXPECT_DOUBLE_EQ(creature.position().x, 4.5);
+    EXPECT_DOUBLE_EQ(creature.position().y, -2.0);
+}
+
+TEST(CreatureTest, MovesByGivenAmount)
+{
+    Simulation::Creature creature
+    {
+        Simulation::Position {4.0, 6.0}
+    };
+
+    creature.moveBy(2.0, -3.0);
+
+    EXPECT_DOUBLE_EQ(creature.position().x, 6.0);
+    EXPECT_DOUBLE_EQ(creature.position().y, 3.0);
+}
+
+TEST(CreatureTest, DoesNotMoveOutsideMapBounds)
+{
+    const Simulation::MapBounds bounds
+    {
+        -10.0,
+        10.0,
+        -10.0,
+        10.0
+    };
+
+    Simulation::Creature creature
+    {
+        Simulation::Position { 9.0, 0.0 }
+    };
+
+    creature.moveBy(2.0, 0.0, bounds);
+
+    EXPECT_DOUBLE_EQ(creature.position().x, 9.0);
+    EXPECT_DOUBLE_EQ(creature.position().y, 0.0);
+}
+
+TEST(CreatureTest, MovesWhenNewPositionIsInsideMapBounds)
+{
+    const Simulation::MapBounds bounds
+    {
+        -10.0,
+        10.0,
+        -10.0,
+        10.0
+    };
+
+    Simulation::Creature creature
+    {
+        Simulation::Position { 4.0, 6.0 }
+    };
+
+    creature.moveBy(2.0, -3.0, bounds);
+
+    EXPECT_DOUBLE_EQ(creature.position().x, 6.0);
+    EXPECT_DOUBLE_EQ(creature.position().y, 3.0);
 }

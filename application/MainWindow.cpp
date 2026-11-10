@@ -2,6 +2,7 @@
 #include "ui_MainWindow.h"
 
 #include <QGridLayout>
+#include <QKeyEvent>
 #include <QVTKOpenGLNativeWidget.h>
 
 #include <vtkActor.h>
@@ -16,7 +17,7 @@
 MainWindow::MainWindow(QWidget* parent)
     : QMainWindow(parent),
     ui(new Ui::MainWindow),
-    mCreaturePosition { 0.0, 0.0 },
+    mCreature {Simulation::Position { 0.0, 0.0 }},
     mMapBounds { -100.0, 100.0, -100.0, 100.0 },
     mFoodGenerator { 1234 },
     mFoods { mFoodGenerator.generateMultiple(mMapBounds, 20)
@@ -25,6 +26,10 @@ MainWindow::MainWindow(QWidget* parent)
     ui->setupUi(this);
 
     mQVtkWidget = new QVTKOpenGLNativeWidget(this);
+
+    mQVtkWidget->setFocusPolicy(Qt::NoFocus);
+    setFocusPolicy(Qt::StrongFocus);
+    setFocus();
 
     QGridLayout* layout = new QGridLayout(ui->frame);
     layout->setContentsMargins(0, 0, 0, 0);
@@ -38,6 +43,51 @@ MainWindow::MainWindow(QWidget* parent)
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::keyPressEvent(QKeyEvent* event)
+{
+    bool creatureMoved = false;
+
+    if (event->key() == Qt::Key_Right)
+    {
+        mCreature.moveBy(2.0, 0.0, mMapBounds);
+        creatureMoved = true;
+    }
+    else if (event->key() == Qt::Key_Left)
+    {
+        mCreature.moveBy(-2.0, 0.0, mMapBounds);
+        creatureMoved = true;
+    }
+    else if (event->key() == Qt::Key_Up)
+    {
+        mCreature.moveBy(0.0, 2.0, mMapBounds);
+        creatureMoved = true;
+    }
+    else if (event->key() == Qt::Key_Down)
+    {
+        mCreature.moveBy(0.0, -2.0, mMapBounds);
+        creatureMoved = true;
+    }
+    else
+    {
+        QMainWindow::keyPressEvent(event);
+        return;
+    }
+
+    if (creatureMoved)
+    {
+        const Simulation::Position creaturePosition =
+            mCreature.position();
+
+        mCircleActor->SetPosition(
+            creaturePosition.x,
+            creaturePosition.y,
+            0.0
+            );
+
+        mRenderWindow->Render();
+    }
 }
 
 void MainWindow::setupVtkPipeline()
@@ -56,9 +106,12 @@ void MainWindow::setupVtkPipeline()
 
     mCircleActor->GetProperty()->SetColor(0.2, 0.7, 1.0);
 
+    const Simulation::Position creaturePosition =
+        mCreature.position();
+
     mCircleActor->SetPosition(
-        mCreaturePosition.x,
-        mCreaturePosition.y,
+        creaturePosition.x,
+        creaturePosition.y,
         0.0
         );
 

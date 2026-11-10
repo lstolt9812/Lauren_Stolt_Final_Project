@@ -7,6 +7,7 @@
 #include <vector>
 #include <vtkSmartPointer.h>
 
+#include "Creature.hpp"
 #include "Food.hpp"
 #include "FoodGenerator.hpp"
 #include "MapBounds.hpp"
@@ -17,6 +18,7 @@ namespace Ui
 class MainWindow;
 }
 
+class QKeyEvent;
 class vtkActor;
 class vtkCubeSource;
 class vtkGenericOpenGLRenderWindow;
@@ -33,6 +35,9 @@ public:
     explicit MainWindow(QWidget* parent = nullptr);
     ~MainWindow();
 
+protected:
+    void keyPressEvent(QKeyEvent* event) override;
+
 private:
     void setupVtkPipeline();
 
@@ -40,7 +45,7 @@ private:
 
     QVTKOpenGLNativeWidget* mQVtkWidget;
 
-    Simulation::Position mCreaturePosition;
+    Simulation::Creature mCreature;
     Simulation::MapBounds mMapBounds;
     Simulation::FoodGenerator mFoodGenerator;
     std::vector<Simulation::Food> mFoods;
