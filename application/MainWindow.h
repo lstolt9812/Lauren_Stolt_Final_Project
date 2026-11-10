@@ -40,6 +40,7 @@ protected:
 
 private:
     void setupVtkPipeline();
+    bool consumeFirstOverlappingFood();
 
     Ui::MainWindow* ui;
 
@@ -49,10 +50,15 @@ private:
     Simulation::MapBounds mMapBounds;
     Simulation::FoodGenerator mFoodGenerator;
     std::vector<Simulation::Food> mFoods;
+    std::vector<Simulation::Creature> mNpcCreatures;
 
     vtkSmartPointer<vtkRegularPolygonSource> mCircleSource;
     vtkSmartPointer<vtkPolyDataMapper> mCircleMapper;
     vtkSmartPointer<vtkActor> mCircleActor;
+
+    vtkSmartPointer<vtkRegularPolygonSource> mNpcCircleSource;
+    vtkSmartPointer<vtkPolyDataMapper> mNpcCircleMapper;
+    std::vector<vtkSmartPointer<vtkActor>> mNpcActors;
 
     vtkSmartPointer<vtkCubeSource> mFoodSource;
     vtkSmartPointer<vtkPolyDataMapper> mFoodMapper;

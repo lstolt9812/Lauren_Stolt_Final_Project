@@ -351,3 +351,49 @@ TEST(CreatureTest, MovesWhenNewPositionIsInsideMapBounds)
     EXPECT_DOUBLE_EQ(creature.position().x, 6.0);
     EXPECT_DOUBLE_EQ(creature.position().y, 3.0);
 }
+
+TEST(CreatureTest, HasInitialRadius)
+{
+    const Simulation::Creature creature {
+        Simulation::Position { 0.0, 0.0 }
+    };
+
+    EXPECT_DOUBLE_EQ(creature.radius(), 2.0);
+}
+
+TEST(CreatureTest, OverlapsFoodInsideCreatureRadius)
+{
+    const Simulation::Creature creature {
+        Simulation::Position { 0.0, 0.0 }
+    };
+
+    const Simulation::Food food {
+        Simulation::Position { 1.0, 0.0 }
+    };
+
+    EXPECT_TRUE(creature.overlaps(food));
+}
+
+TEST(CreatureTest, DoesNotOverlapFoodOutsideCreatureRadius)
+{
+    const Simulation::Creature creature {
+        Simulation::Position { 0.0, 0.0 }
+    };
+
+    const Simulation::Food food {
+        Simulation::Position { 3.0, 0.0 }
+    };
+
+    EXPECT_FALSE(creature.overlaps(food));
+}
+
+TEST(CreatureTest, GrowsByGivenAmount)
+{
+    Simulation::Creature creature {
+        Simulation::Position { 0.0, 0.0 }
+    };
+
+    creature.growBy(0.25);
+
+    EXPECT_DOUBLE_EQ(creature.radius(), 2.25);
+}
